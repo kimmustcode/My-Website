@@ -1,4 +1,4 @@
-from flask import Flask 
+from flask import Flask, redirect
 from flask import render_template
 import flask
 
@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def default():
-    return render_template('def.html', title='Default')
+    return render_template('def.html', title='Landing')
 
 @app.route('/home')
 def home():
