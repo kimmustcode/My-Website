@@ -30,7 +30,7 @@
     <div class="stats-box">
       <div class="stat-row">
         <span class="stat-label">KITTIES</span>
-        <span class="stat-val" id="cookie-count">0</span>
+        <span class="stat-val" id="kitty-count">0</span>
       </div>
       <div class="stat-row" style="margin-top:6px">
         <span class="stat-label">PER SEC</span>
@@ -47,7 +47,7 @@
     </div>
 
     <div style="position:relative">
-      <button class="cookie-btn" id="cookie-btn" onclick="clickCookie(event)"><img src="/static/kittyserious.jpg" width="150" length="auto"></button>
+      <button class="kitty-btn" id="kitty-btn" onclick="clickKitty(event)"><img src="/static/kittyserious.jpg" width="150" length="auto"></button>
       <div class="click-floats" id="floats"></div>
     </div>
 
@@ -65,7 +65,7 @@
   <!-- Right -->
   <div class="right">
     <div class="save-panel">
-      <div class="panel-title">▸ SAVE CODE</div>
+      <div class="panel-title">SAVE GAME</div>
       <textarea id="save-code" placeholder="Paste save code here..." spellcheck="false"></textarea>
       <button class="btn" onclick="exportSave()">[ EXPORT SAVE ]</button>
       <button class="btn" onclick="importSave()">[ IMPORT SAVE ]</button>
@@ -76,7 +76,7 @@
 </div>
 
 <script>
-// ── Game state ──────────────────────────────────────────────────────────────
+//  Game state 
 const UPGRADES = [
   { id:"cursor",   name:"Cursor",        desc:"+0.1/click",        baseCost:15,   cpc:0.1,  cps:0   },
   { id:"bingus",   name:"Bingus",       desc:"1 kitties/sec",    baseCost:100,  cpc:0,  cps:1   },
@@ -85,12 +85,13 @@ const UPGRADES = [
   { id:"factory",  name:"Cat Factory",       desc:"260 kitties/sec",  baseCost:130000, cpc:0,  cps:260 },
   { id:"lab",  name:"Mewtations Lab",   desc:"1400 kitties/sec",  baseCost:1400000, cpc:0,  cps:1400  },
   { id:"temple",   name:"Temple of OIIA", desc:"7800 kitties/sec", baseCost:20000000,cpc:0,  cps:7800 },
+  { id:"wizard",   name:"High Wizard Mittens", desc:"44000 kitties/sec", baseCost:330000000,cpc:0,  cps:44000 },
 ];
 
 let state = {
-  cookies: 0,
+  kitties: 0,
   total: 0,
-  counts: {},   // upgrade id -> count owned
+  counts: {},   
 };
 
 function getCost(up) {
@@ -104,7 +105,7 @@ function getCPS() {
   return UPGRADES.reduce((s, u) => s + u.cps * (state.counts[u.id] || 0), 0);
 }
 
-// ── Rendering ───────────────────────────────────────────────────────────────
+//  Rendering 
 function fmt(n) {
   if (n >= 1e12) return (n/1e12).toFixed(1)+"T";
   if (n >= 1e9)  return (n/1e9).toFixed(1)+"B";
@@ -123,7 +124,7 @@ function fmtKitty(n) {
 
 
 function renderStats() {
-  document.getElementById("cookie-count").textContent = fmtKitty(state.cookies);
+  document.getElementById("kitty-count").textContent = fmtKitty(state.kitties);
   document.getElementById("total-count").textContent  = fmtKitty(state.total);
   document.getElementById("cps-display").textContent  = fmt(getCPS());
   document.getElementById("cpc-display").textContent  = fmt(getCPC());
@@ -135,7 +136,7 @@ function renderUpgrades() {
   UPGRADES.forEach(up => {
     const cost = getCost(up);
     const count = state.counts[up.id] || 0;
-    const canAfford = state.cookies >= cost;
+    const canAfford = state.kitties >= cost;
     const btn = document.createElement("button");
     btn.className = "upgrade-btn" + (canAfford ? " affordable" : "");
     btn.disabled = !canAfford;
@@ -186,11 +187,11 @@ function render() {
   renderBuildings();
 }
 
-// ── Actions ─────────────────────────────────────────────────────────────────
-function clickCookie(e) {
+//  Actions 
+function clickKitty(e) {
   const gain = getCPC();
-  state.cookies += gain;
-  state.total   += gain;
+  state.kitties = (state.kitties || 0) + gain;
+  state.total   = (state.total   || 0) + gain;
   render();
   spawnFloat(e, gain);
   checkMilestone();
@@ -198,14 +199,14 @@ function clickCookie(e) {
 
 function buyUpgrade(up) {
   const cost = getCost(up);
-  if (state.cookies < cost) return;
-  state.cookies -= cost;
+  if (state.kitties < cost) return;
+  state.kitties -= cost;
   state.counts[up.id] = (state.counts[up.id] || 0) + 1;
   render();
 }
 
 function spawnFloat(e, val) {
-  const btn = document.getElementById("cookie-btn");
+  const btn = document.getElementById("kitty-btn");
   const rect = btn.getBoundingClientRect();
   const floats = document.getElementById("floats");
   const el = document.createElement("span");
@@ -219,7 +220,7 @@ function spawnFloat(e, val) {
   setTimeout(() => el.remove(), 900);
 }
 
-// ── Milestones ───────────────────────────────────────────────────────────────
+//  Milestones 
 const MILESTONES = [100,1000,10000,100000,1e6,1e9];
 let lastMilestone = 0;
 function checkMilestone() {
@@ -236,18 +237,18 @@ function showTicker(msg) {
   setTimeout(() => { t.textContent = "\u00a0"; }, 4000);
 }
 
-// ── Passive CPS ──────────────────────────────────────────────────────────────
+//  Passive CPS 
 setInterval(() => {
   const cps = getCPS();
   if (cps > 0) {
-    state.cookies += cps / 20;  // tick 20x/sec
-    state.total   += cps / 20;
+    state.kitties = (state.kitties || 0) + cps / 20;
+    state.total   = (state.total   || 0) + cps / 20;
     checkMilestone();
     renderStats();
   }
 }, 50);
 
-// ── Save / Load ──────────────────────────────────────────────────────────────
+//  Save / Load 
 function exportSave() {
   const json = JSON.stringify(state);
   const code = btoa(encodeURIComponent(json));
@@ -262,7 +263,7 @@ function importSave() {
   try {
     const json = decodeURIComponent(atob(code));
     const loaded = JSON.parse(json);
-    if (typeof loaded.cookies !== "number") throw new Error();
+    if (typeof loaded.kitties !== "number") throw new Error();
     state = loaded;
     // recover milestone tracker
     for (const m of MILESTONES) {
@@ -277,7 +278,7 @@ function importSave() {
 
 function resetGame() {
   if (!confirm("Reset all progress?")) return;
-  state = { cookies: 0, total: 0, counts: {} };
+  state = { kitties: 0, total: 0, counts: {} };
   lastMilestone = 0;
   document.getElementById("save-code").value = "";
   render();

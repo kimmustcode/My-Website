@@ -1,6 +1,6 @@
 :root {
     --bg: #0a0a0f;
-    --panel: #13131a;
+    --panel: #000000;
     --border: #2a2a3a;
     --gold: #b342f5;
     --gold-dim: #5f1481;
@@ -67,7 +67,7 @@
   .stat-row { display: flex; justify-content: space-between; align-items: baseline; }
   .stat-label { font: 'Rockwell'; color: var(--muted); font-size: 16px; }
   .stat-val { color: var(--gold); font-size: 22px; }
-  .cookie-btn {
+  .kitty-btn {
     width: 160px; height: 155px;
     background: none;
     border: 3px solid var(--gold);
@@ -79,9 +79,9 @@
     position: relative;
     user-select: none;
   }
-  .cookie-btn:hover { border-color: var(--gold-dim); box-shadow: var(--shadow); }
-  .cookie-btn:active { transform: scale(0.93); }
-  .cookie-btn.pop { transform: scale(1.07); }
+  .kitty-btn:hover { border-color: var(--gold-dim); box-shadow: var(--shadow); }
+  .kitty-btn:active { transform: scale(0.93); }
+  .kitty-btn.pop { transform: scale(1.07); }
   .click-floats { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
   .float-num {
     position: absolute;
