@@ -1,6 +1,5 @@
-from flask import Flask, redirect
+from flask import Flask
 from flask import render_template
-import flask
 
 # Routes
 app = Flask(__name__)
@@ -24,6 +23,11 @@ def art():
 @app.route('/favechara')
 def favechara():
     return render_template('favechara.html', title='Favorite Characters')
+
+@app.route('/kittyclicker')
+def kittyclicker():
+    return render_template('kittyclicker.html', title='Kitty Clicker')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

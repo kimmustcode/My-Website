@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" href="/static/css/defStyle.css">
+<link rel="stylesheet" type="text/css" href="/static/css/kitty.css">
+<head>
+    <link rel="shortcut icon" type="image/x-icon" href="static/logo.png" />
+</head>
+<title>
+    Kitty Clicker
+</title>
+<ul style="margin-top: -10; margin-left: -5;">
+    <li><a href="https://www.kimcodes.lol/home">Me</a></li>
+    <li><a href="https://www.kimcodes.lol/art">Art</a></li>
+    <li><a href="https://www.kimcodes.lol/projects">Projects</a></li>
+    <li><a href="https://www.kimcodes.lol/favechara">Characters</a></li>
+    <li><a href="https://www.kimcodes.lol/kittyclicker">Kitty Clicker</a></li>
+</ul>
+</head>
+<body>
+
+<h1>KITTY CLICKER</h1>
+<p class="subtitle">MREEOOOWP</p>
+
+<div class="layout">
+  <!-- Left -->
+  <div class="left">
+    <div class="stats-box">
+      <div class="stat-row">
+        <span class="stat-label">KITTIES</span>
+        <span class="stat-val" id="cookie-count">0</span>
+      </div>
+      <div class="stat-row" style="margin-top:6px">
+        <span class="stat-label">PER SEC</span>
+        <span class="stat-val" id="cps-display">0</span>
+      </div>
+      <div class="stat-row" style="margin-top:6px">
+        <span class="stat-label">PER CLICK</span>
+        <span class="stat-val" id="cpc-display">1</span>
+      </div>
+      <div class="stat-row" style="margin-top:6px">
+        <span class="stat-label">LIFETIME TOTAL</span>
+        <span class="stat-val" id="total-count">0</span>
+      </div>
+    </div>
+
+    <div style="position:relative">
+      <button class="cookie-btn" id="cookie-btn" onclick="clickCookie(event)"><img src="/static/kittyserious.jpg" width="150" length="auto"></button>
+      <div class="click-floats" id="floats"></div>
+    </div>
+
+    <div class="ticker" id="ticker">&nbsp;</div>
+  </div>
+
+  <!-- Middle -->
+  <div class="middle">
+    <div class="panel-title">--UPGRADES--</div>
+    <div class="upgrade-grid" id="upgrade-grid"></div>
+    <!-- Buildings Bar -->
+    <div class="buildings-bar" id="buildings-bar"></div>
+  </div>
+
+  <!-- Right -->
+  <div class="right">
+    <div class="save-panel">
+      <div class="panel-title">▸ SAVE CODE</div>
+      <textarea id="save-code" placeholder="Paste save code here..." spellcheck="false"></textarea>
+      <button class="btn" onclick="exportSave()">[ EXPORT SAVE ]</button>
+      <button class="btn" onclick="importSave()">[ IMPORT SAVE ]</button>
+      <button class="btn danger" onclick="resetGame()">[ RESET ]</button>
+      <div class="msg" id="save-msg"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Game state ──────────────────────────────────────────────────────────────
+const UPGRADES = [
+  { id:"cursor",   name:"Cursor",        desc:"+0.1/click",        baseCost:15,   cpc:0.1,  cps:0   },
+  { id:"bingus",   name:"Bingus",       desc:"1 kitties/sec",    baseCost:100,  cpc:0,  cps:1   },
+  { id:"ranch",     name:"Catboy Ranch",   desc:"8 kitties/sec",   baseCost:1100,  cpc:0,  cps:8   },
+  { id:"mine",  name:"Cat Mine",       desc:"47 kitties/sec",  baseCost:12000, cpc:0,  cps:47  },
+  { id:"factory",  name:"Cat Factory",       desc:"260 kitties/sec",  baseCost:130000, cpc:0,  cps:260 },
+  { id:"lab",  name:"Mewtations Lab",   desc:"1400 kitties/sec",  baseCost:1400000, cpc:0,  cps:1400  },
+  { id:"temple",   name:"Temple of OIIA", desc:"7800 kitties/sec", baseCost:20000000,cpc:0,  cps:7800 },
+];
+
+let state = {
+  cookies: 0,
+  total: 0,
+  counts: {},   // upgrade id -> count owned
+};
+
+function getCost(up) {
+  const n = state.counts[up.id] || 0;
+  return Math.floor(up.baseCost * Math.pow(1.15, n));
+}
+function getCPC() {
+  return 1 + UPGRADES.reduce((s, u) => s + u.cpc * (state.counts[u.id] || 0), 0);
+}
+function getCPS() {
+  return UPGRADES.reduce((s, u) => s + u.cps * (state.counts[u.id] || 0), 0);
+}
+
+// ── Rendering ───────────────────────────────────────────────────────────────
+function fmt(n) {
+  if (n >= 1e12) return (n/1e12).toFixed(1)+"T";
+  if (n >= 1e9)  return (n/1e9).toFixed(1)+"B";
+  if (n >= 1e6)  return (n/1e6).toFixed(1)+"M";
+  if (n >= 1e3)  return (n/1e3).toFixed(1)+"K";
+  return n.toFixed(1);
+}
+
+function fmtKitty(n) {
+  if (n >= 1e12) return (n/1e12).toFixed(1)+"T";
+  if (n >= 1e9)  return (n/1e9).toFixed(1)+"B";
+  if (n >= 1e6)  return (n/1e6).toFixed(1)+"M";
+  if (n >= 1e3)  return (n/1e3).toFixed(1)+"K";
+  return Math.floor(n).toString();
+}
+
+
+function renderStats() {
+  document.getElementById("cookie-count").textContent = fmtKitty(state.cookies);
+  document.getElementById("total-count").textContent  = fmtKitty(state.total);
+  document.getElementById("cps-display").textContent  = fmt(getCPS());
+  document.getElementById("cpc-display").textContent  = fmt(getCPC());
+}
+
+function renderUpgrades() {
+  const grid = document.getElementById("upgrade-grid");
+  grid.innerHTML = "";
+  UPGRADES.forEach(up => {
+    const cost = getCost(up);
+    const count = state.counts[up.id] || 0;
+    const canAfford = state.cookies >= cost;
+    const btn = document.createElement("button");
+    btn.className = "upgrade-btn" + (canAfford ? " affordable" : "");
+    btn.disabled = !canAfford;
+    btn.innerHTML = `
+      <span class="u-name">${up.name}</span>
+      <span class="u-desc">${up.desc}</span>
+      <span class="u-cost">🐱 ${fmt(cost)}</span>
+      ${count > 0 ? `<span class="u-count">x${count}</span>` : ""}
+    `;
+    btn.onclick = () => buyUpgrade(up);
+    grid.appendChild(btn);
+  });
+}
+
+function renderBuildings() {
+  const bar = document.getElementById("buildings-bar");
+  bar.innerHTML = "";
+  UPGRADES.forEach(up => {
+    const count = state.counts[up.id] || 0;
+    if (count === 0) return;
+    const imgName = up.id.replace(/-/g, "_") + ".png";
+    const totalCps = up.cps * count; // add this
+    const div = document.createElement("div");
+    div.className = "building-entry";
+    if (up.id == 'cursor'){
+      div.innerHTML = `
+      <img src="/static/buildings/${imgName}" alt="${up.name}">
+      <span class="building-count">x${count}</span>
+      <span class="building-name">${up.name}</span>
+    `;
+    }
+    else{
+      div.innerHTML = `
+      <img src="/static/buildings/${imgName}" alt="${up.name}">
+      <span class="building-count">x${count}</span>
+      <span class="building-name">${up.name}</span>
+      <span class="building-cps">${fmt(totalCps)}/s</span>
+    `;
+    }
+    
+    bar.appendChild(div);
+  });
+}
+
+function render() {
+  renderStats();
+  renderUpgrades();
+  renderBuildings();
+}
+
+// ── Actions ─────────────────────────────────────────────────────────────────
+function clickCookie(e) {
+  const gain = getCPC();
+  state.cookies += gain;
+  state.total   += gain;
+  render();
+  spawnFloat(e, gain);
+  checkMilestone();
+}
+
+function buyUpgrade(up) {
+  const cost = getCost(up);
+  if (state.cookies < cost) return;
+  state.cookies -= cost;
+  state.counts[up.id] = (state.counts[up.id] || 0) + 1;
+  render();
+}
+
+function spawnFloat(e, val) {
+  const btn = document.getElementById("cookie-btn");
+  const rect = btn.getBoundingClientRect();
+  const floats = document.getElementById("floats");
+  const el = document.createElement("span");
+  el.className = "float-num";
+  el.textContent = "+" + fmt(val);
+  const x = (e.clientX - rect.left) / rect.width * 100;
+  const y = (e.clientY - rect.top)  / rect.height * 100;
+  el.style.left = x + "%";
+  el.style.top  = y + "%";
+  floats.appendChild(el);
+  setTimeout(() => el.remove(), 900);
+}
+
+// ── Milestones ───────────────────────────────────────────────────────────────
+const MILESTONES = [100,1000,10000,100000,1e6,1e9];
+let lastMilestone = 0;
+function checkMilestone() {
+  for (const m of MILESTONES) {
+    if (state.total >= m && m > lastMilestone) {
+      lastMilestone = m;
+      showTicker(`★ ${fmt(m)} KITTIES COLLECTED! ★`);
+    }
+  }
+}
+function showTicker(msg) {
+  const t = document.getElementById("ticker");
+  t.textContent = msg;
+  setTimeout(() => { t.textContent = "\u00a0"; }, 4000);
+}
+
+// ── Passive CPS ──────────────────────────────────────────────────────────────
+setInterval(() => {
+  const cps = getCPS();
+  if (cps > 0) {
+    state.cookies += cps / 20;  // tick 20x/sec
+    state.total   += cps / 20;
+    checkMilestone();
+    renderStats();
+  }
+}, 50);
+
+// ── Save / Load ──────────────────────────────────────────────────────────────
+function exportSave() {
+  const json = JSON.stringify(state);
+  const code = btoa(encodeURIComponent(json));
+  document.getElementById("save-code").value = code;
+  navigator.clipboard?.writeText(code).catch(()=>{});
+  showMsg("Copied to clipboard!", "ok");
+}
+
+function importSave() {
+  const code = document.getElementById("save-code").value.trim();
+  if (!code) { showMsg("Paste a save code first.", "err"); return; }
+  try {
+    const json = decodeURIComponent(atob(code));
+    const loaded = JSON.parse(json);
+    if (typeof loaded.cookies !== "number") throw new Error();
+    state = loaded;
+    // recover milestone tracker
+    for (const m of MILESTONES) {
+      if (state.total >= m) lastMilestone = m;
+    }
+    render();
+    showMsg("Save loaded!", "ok");
+  } catch {
+    showMsg("Invalid save code.", "err");
+  }
+}
+
+function resetGame() {
+  if (!confirm("Reset all progress?")) return;
+  state = { cookies: 0, total: 0, counts: {} };
+  lastMilestone = 0;
+  document.getElementById("save-code").value = "";
+  render();
+  showMsg("Game reset.", "ok");
+}
+
+function showMsg(msg, type) {
+  const el = document.getElementById("save-msg");
+  el.textContent = msg;
+  el.className = "msg " + type;
+  setTimeout(() => { el.textContent = ""; el.className = "msg"; }, 3000);
+}
+
+render();
+</script>
+<div class="fullscreen-bg">
+    <video loop muted autoplay class="fullscreen-bg_video">
+        <source src="static/space.mp4" type="video/mp4">
+    </video>
+</div>
+</body>
+</html>
