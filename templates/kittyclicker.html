@@ -129,12 +129,15 @@ function renderStats() {
 
 function renderUpgrades() {
   const grid = document.getElementById("upgrade-grid");
+
   grid.innerHTML = "";
+
   UPGRADES.forEach(up => {
     const cost = getCost(up);
     const count = state.counts[up.id] || 0;
     const canAfford = state.kitties >= cost;
     const btn = document.createElement("button");
+
     btn.className = "upgrade-btn" + (canAfford ? " affordable" : "");
     btn.disabled = !canAfford;
     btn.innerHTML = `
@@ -143,6 +146,7 @@ function renderUpgrades() {
       <span class="u-cost">🐱 ${fmt(cost)}</span>
       ${count > 0 ? `<span class="u-count">x${count}</span>` : ""}
     `;
+    
     btn.onclick = () => buyUpgrade(up);
     grid.appendChild(btn);
   });
@@ -151,13 +155,18 @@ function renderUpgrades() {
 function renderBuildings() {
   const bar = document.getElementById("buildings-bar");
   bar.innerHTML = "";
+
   UPGRADES.forEach(up => {
     const count = state.counts[up.id] || 0;
+
     if (count === 0) return;
+
     const imgName = up.id.replace(/-/g, "_") + ".png";
     const totalCps = up.cps * count; // add this
     const div = document.createElement("div");
+
     div.className = "building-entry";
+
     if (up.id == 'cursor'){
       div.innerHTML = `
       <img src="/static/buildings/${imgName}" alt="${up.name}">
@@ -187,8 +196,10 @@ function render() {
 //  Actions 
 function clickKitty(e) {
   const gain = getCPC();
+
   state.kitties = (state.kitties || 0) + gain;
   state.total   = (state.total   || 0) + gain;
+  
   render();
   spawnFloat(e, gain);
   checkMilestone();
@@ -196,9 +207,12 @@ function clickKitty(e) {
 
 function buyUpgrade(up) {
   const cost = getCost(up);
+
   if (state.kitties < cost) return;
+
   state.kitties -= cost;
   state.counts[up.id] = (state.counts[up.id] || 0) + 1;
+
   render();
 }
 
@@ -207,13 +221,18 @@ function spawnFloat(e, val) {
   const rect = btn.getBoundingClientRect();
   const floats = document.getElementById("floats");
   const el = document.createElement("span");
+
   el.className = "float-num";
   el.textContent = "+" + fmt(val);
+
   const x = (e.clientX - rect.left) / rect.width * 100;
   const y = (e.clientY - rect.top)  / rect.height * 100;
+
   el.style.left = x + "%";
   el.style.top  = y + "%";
+
   floats.appendChild(el);
+
   setTimeout(() => el.remove(), 900);
 }
 
