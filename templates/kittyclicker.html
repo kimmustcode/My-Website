@@ -17,7 +17,6 @@
 <ul style="margin-bottom: 20px;">
   <li><a href="https://www.kimcodes.lol/home">Me</a></li>
   <li><a href="https://www.kimcodes.lol/art">Art</a></li>
-  <li><a href="https://www.kimcodes.lol/projects">Projects</a></li>
   <li><a href="https://www.kimcodes.lol/favechara">Characters</a></li>
   <li><a href="https://www.kimcodes.lol/kittyclicker">Kitty Clicker</a></li>
 </ul>
@@ -76,7 +75,7 @@
 <script>
 //  Game state 
 const UPGRADES = [
-  { id:"cursor",   name:"Cursor",        desc:"+0.1/click",        baseCost:15,   cpc:0.1,  cps:0   },
+  { id:"paw",   name:"Paw",        desc:"0.1 kitties/sec",        baseCost:15,   cpc:0,  cps:0.1   },
   { id:"bingus",   name:"Bingus",       desc:"1 kitties/sec",    baseCost:100,  cpc:0,  cps:1   },
   { id:"ranch",     name:"Catboy Ranch",   desc:"8 kitties/sec",   baseCost:1100,  cpc:0,  cps:8   },
   { id:"mine",  name:"Cat Mine",       desc:"47 kitties/sec",  baseCost:12000, cpc:0,  cps:47  },
@@ -168,21 +167,14 @@ function renderBuildings() {
 
     div.className = "building-entry";
 
-    if (up.id == 'cursor'){
-      div.innerHTML = `
-      <img src="/static/buildings/${imgName}" alt="${up.name}">
-      <span class="building-count">x${count}</span>
-      <span class="building-name">${up.name}</span>
+   
+    div.innerHTML = `
+    <img src="/static/buildings/${imgName}" alt="${up.name}">
+    <span class="building-count">x${count}</span>
+    <span class="building-name">${up.name}</span>
+    <span class="building-cps">${fmt(totalCps)}/s</span>
     `;
-    }
-    else{
-      div.innerHTML = `
-      <img src="/static/buildings/${imgName}" alt="${up.name}">
-      <span class="building-count">x${count}</span>
-      <span class="building-name">${up.name}</span>
-      <span class="building-cps">${fmt(totalCps)}/s</span>
-    `;
-    }
+    
     
     bar.appendChild(div);
   });
