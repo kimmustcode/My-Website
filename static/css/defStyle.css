@@ -1,27 +1,4 @@
-ul 
-{
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    font-family: 'Courier New', Courier, monospace;
-}
 
-li 
-{
-    float: left;
-    border-style: solid;
-    border-width: 1px;
-    border-color: white;
-}
-
-li a 
-{
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
 .fullscreen-bg {
     position: fixed;
     top: 0;
