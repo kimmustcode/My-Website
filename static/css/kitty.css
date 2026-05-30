@@ -14,19 +14,14 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Courier New', Courier, monospace;
-    font-size: 20px;
+    font-size: 16px;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 
   }
-  body > ul {
-    font-family: 'Courier New';
-    font-size: 16px;
-    width: 100%;
-    margin-left: -10px;
-    }
+
   h1 {
     font-family: 'Rockwell', monospace;
     font-size: 18px;
