@@ -14,6 +14,20 @@
                 background-color: rgb(162, 0, 255) !important;
                 font-family: 'Courier New';
             }
+            #snow-canvas {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                pointer-events: none; 
+                z-index: 1;          
+            }
+
+            .container, header, footer {
+                position: relative;
+                z-index: 2;
+            }
         </style>
         <title>Kitty Clicker</title>
     </head>
@@ -22,7 +36,7 @@
   <meta name="theme-color" content="#ffffff" />
 
 
-  <header class="d-flex py-3">
+  <header class="d-flex py-3 justify-content-center w-100">
   <ul class="nav nav-pills">
       <li class="nav-item">
       <a href="https://www.kimcodes.lol/home" class="nav-link" aria-current="page">Home</a>
@@ -323,10 +337,9 @@ render();
     var audio = document.getElementById("myaudio");
     audio.volume = 0.1;
 </script>
-<div class="fullscreen-bg">
-    <video loop muted autoplay class="fullscreen-bg_video">
-        <source src="static/space.mp4" type="video/mp4">
-    </video>
-</div>
+<canvas id="snow-canvas"></canvas>
+
+        
+<script src="static/snow.js"></script>
 </body>
 </html>

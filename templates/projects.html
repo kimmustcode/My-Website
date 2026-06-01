@@ -1,4 +1,5 @@
-<HTML>
+<!DOCTYPE html>
+<html lang="en">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="theme-color" content="#ffffff">
@@ -12,61 +13,107 @@
             .nav-pills .nav-link.active {
                 background-color: rgb(162, 0, 255) !important;
             }
+            #snow-canvas {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: -1;
+                display: block;
+            }
+            .project-card {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+            }
+            .project-card h1 {
+                min-height: 96px; 
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 1rem;
+            }
+            .project-card a {
+                display: block;
+                width: 100%;
+                height: 280px;
+                overflow: hidden;
+                border-radius: 8px;
+            }
+            .project-card img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                object-position: center;
+                transition: transform 0.3s ease;
+            }
+            .project-card a:hover img {
+                transform: scale(1.03);
+            }
         </style>
         <title>Projects</title>
     </head>
     
-
     <body style="background-color:rgb(0, 0, 0);">
       
         <meta name="theme-color" content="#ffffff" />
-
         
-        <header class="d-flex py-3">
-        <ul class="nav nav-pills">
-            <li class="nav-item">
-            <a href="https://www.kimcodes.lol/home" class="nav-link" aria-current="page">Home</a>
-            </li>
-            <li class="nav-item"><a href="https://www.kimcodes.lol/projects" class="nav-link active">Projects</a></li>
-            <li class="nav-item"><a href="https://www.kimcodes.lol/art" class="nav-link">Art</a></li>
-            <li class="nav-item"><a href="https://www.kimcodes.lol/favechara" class="nav-link">Characters</a></li>
-            <li class="nav-item"><a href="https://www.kimcodes.lol/kittyclicker" class="nav-link">Clicker Game</a></li>
-        </ul>
+        <header class="d-flex py-3 justify-content-center">
+            <ul class="nav nav-pills">
+                <li class="nav-item"><a href="https://www.kimcodes.lol/home" class="nav-link">Home</a></li>
+                <li class="nav-item"><a href="https://www.kimcodes.lol/projects" class="nav-link active">Projects</a></li>
+                <li class="nav-item"><a href="https://www.kimcodes.lol/art" class="nav-link">Art</a></li>
+                <li class="nav-item"><a href="https://www.kimcodes.lol/favechara" class="nav-link">Characters</a></li>
+                <li class="nav-item"><a href="https://www.kimcodes.lol/kittyclicker" class="nav-link">Clicker Game</a></li>
+            </ul>
         </header>
         
-        <h1 style="background-color:black;color: white">Modbus Intrusion Detection System</h1>
-        <a href="https://github.com/kimmustcode/Modbus-Guard" style="padding-left: 25px;" target="_blank" rel="noopener noreferrer" style="padding-left: 25px;padding-bottom:30px;"><img src="/static/projectmodbus.gif" width = "500" length = "auto"></a>
-        <br>
-        <tag style="background-color:black;color: white">Modbus-Guard is a low-latency, hybrid C/Python Intrusion Detection System (IDS) designed specifically for Operational Technology (OT) and SCADA environments.</tag>
-        <br>
-        <tag style="background-color:black;color: white">performs Deep Packet Inspection (DPI) on Modbus-TCP traffic to identify and alert on unauthorized industrial commands in real-time.</tag>
-        <br>
-        <tag style="background-color:black;color: white">Click image to go to github.</tag>
+        <main class="container my-4" style="max-width: 1200px;">
+            
+            <div class="row row-cols-1 row-cols-lg-2 g-5 justify-content-center">
+                
+                <div class="col text-center">
+                    <div class="project-card">
+                        <h1 style="color: rgb(162, 0, 255);">Modbus Intrusion Detection System</h1>
+                        <a href="https://github.com/kimmustcode/Modbus-Guard" target="_blank" rel="noopener noreferrer">
+                            <img src="/static/projectmodbus.gif" alt="Modbus-Guard Showcase">
+                        </a>
+                        <p style="color: white; margin: 15px auto 5px auto;">
+                            Modbus-Guard is a low-latency, hybrid C/Python Intrusion Detection System (IDS) designed specifically for Operational Technology (OT) and SCADA environments. It performs Deep Packet Inspection (DPI) on Modbus-TCP traffic to identify and alert on unauthorized industrial commands in real-time.
+                        </p>
+                        <p style="color: #b3b3b3; font-size: 0.9rem;">Click image to go to GitHub.</p>
+                    </div>
+                </div>
 
-        <br>
-        <h1 style="background-color:black;color: white">FileSync</h1>
-        <a href="https://github.com/kimmustcode/FileSync" style="padding-left: 25px;" target="_blank" rel="noopener noreferrer" style="padding-left: 25px;padding-bottom:30px;"><img src="/static/projectfilesync.png" width = "500" length = "auto"></a>
-        <br>
-        <tag style="background-color:black;color: white">FileSync is a lightweight, socket-based tool designed to synchronize music files (specifically .mp3) between a host and a server. It efficiently</tag>
-        <br>
-        <tag style="background-color:black;color: white">identifies missing files on the server by comparing folder structures and then uploads only the necessary files.</tag>
-        <br>
-        <tag style="background-color:black;color: white">Click image to go to github.</tag>
-        
+                <div class="col text-center">
+                    <div class="project-card">
+                        <h1 style="color: rgb(162, 0, 255);">FileSync</h1>
+                        <a href="https://github.com/kimmustcode/FileSync" target="_blank" rel="noopener noreferrer">
+                            <img src="/static/projectfilesync.png" alt="FileSync Showcase">
+                        </a>
+                        <p style="color: white; margin: 15px auto 5px auto;">
+                            FileSync is a lightweight, socket-based tool designed to synchronize music files (specifically .mp3) between a host and a server. It efficiently identifies missing files on the server by comparing folder structures and then uploads only the necessary files.
+                        </p>
+                        <p style="color: #b3b3b3; font-size: 0.9rem;">Click image to go to GitHub.</p>
+                    </div>
+                </div>
+                
+            </div>
+            
+        </main>
         
         <audio autoplay loop id="myaudio">
             <source src="/static/templeoftime.mp3" type="audio/mpeg">
         </audio>
-        <script>
-                var audio = document.getElementById("myaudio");
-                audio.volume = 0.1;
-        </script>
 
-        <div class="fullscreen-bg">
-            <video loop muted autoplay class="fullscreen-bg_video">
-                <source src="static/space.mp4" type="video/mp4">
-            </video>
-        </div>
-    <script>document.documentElement.style.visibility = 'visible';</script>
+        <canvas id="snow-canvas"></canvas>
+
+        <script>
+            var audio = document.getElementById("myaudio");
+            audio.volume = 0.1;
+        </script>
+        <script src="static/snow.js"></script>
+        <script>document.documentElement.style.visibility = 'visible';</script>
     </body>
-</HTML>
+</html>
